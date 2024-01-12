@@ -15,12 +15,13 @@ class SKButton: SKNode {
     var isEnabled = true
     
     init(label: SKLabelNode) {
-        
         button = label
         
         mask = SKSpriteNode(color: .black, size: button.frame.size)
-        mask.position.y = +20
+//        mask.position.y = +20
         mask.alpha = 0
+        mask.anchorPoint = CGPoint(x: 0.5, y: 0.25)
+        mask.setScale(1.5)
         
         cropNode = SKCropNode()
         cropNode.maskNode = button
@@ -101,6 +102,7 @@ class SKButton: SKNode {
         isEnabled = true
         mask.alpha = 0
         button.alpha = 1.0
+        setScale(1)
     }
     
     func addAction(action: @escaping () -> Void){

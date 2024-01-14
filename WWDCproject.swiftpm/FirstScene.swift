@@ -30,7 +30,9 @@ struct DisplayTest: View {
 
 class FirstScene: SKScene {
     
-    var textBox: GenericTextBox = GenericTextBox(title: "School time", text: "The monster is trying to attack John’s school. Help John to discover what is making the monster come back from the shadows!")
+    var textBox: GenericTextBox = GenericTextBox(title: "School time", text: "The monster is trying to attack John’s school. Help John to discover what is making the monster come back from the shadows!", nameOfTheSprite: .first)
+    
+    var triggerTextBox: GenericTextBox = GenericTextBox(title: "Triggers", text: "The monster gets strong when John see beach elements.\n\nIt reminds him of bad memories and make John anxious and sad. ", nameOfTheSprite: .trigger)
     
     let coloredSchool: SKSpriteNode = SKSpriteNode(imageNamed: "ColoredSchool")
     
@@ -48,6 +50,8 @@ class FirstScene: SKScene {
     
     var monsterSprite: SKSpriteNode = SKSpriteNode(imageNamed: "Monster")
     
+    var isSceneEnded: Bool = false
+    
     override func didMove(to view: SKView) {
         backgroundColor = SKColor.bgColor
         
@@ -63,14 +67,19 @@ class FirstScene: SKScene {
         
         posterShineShap.position = CGPoint(x: -9, y: 40)
         posterShineShap.setScale(0.3415)
+        posterShineShap.alpha = 0
         
         coloredSchool.setScale(0.3415)
-        darkness1.position = CGPoint(x: 0, y: 180)
+        darkness1.position = CGPoint(x: 0, y: 210)
         darkness1.setScale(0.75)
         darkness1.alpha = 0
         
         saturation.addChild(coloredSchool)
         saturation.filter = CIFilter(name: "CIColorControls")
+        
+        monsterSprite.setScale(0.3415)
+        monsterSprite.position = CGPoint(x: -385, y: 155)
+        monsterSprite.anchorPoint = CGPoint(x: 0.5, y: 1)
         
         addChild(saturation)
         addChild(darkness2)
@@ -80,11 +89,31 @@ class FirstScene: SKScene {
         addChild(posterShineShap)
         addChild(textBox)
         
+        
         textBox.addAction {
             self.jumpscareAction()
-            self.shineAction()
+        }
+        
+        
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if !isSceneEnded{
+            for touch in touches {
+                let location = touch.location(in: self)
+                if posterShineShap.contains(location) || ballShineShap.contains(location){
+                    
+                    isSceneEnded = true
+                    
+                    self.addChild(triggerTextBox)
+                    triggerTextBox.alpha = 0
+                    
+                    triggerTextBox.run(SKAction.fadeAlpha(to: 1, duration: 1))
+                }
+            }
         }
     }
+    
     
     func shineAction(){
         let actionForShine = SKAction.sequence([
@@ -97,10 +126,18 @@ class FirstScene: SKScene {
             SKAction.scale(to: 0.3, duration: 0.5),
         ])
         
+        let monsterAction = SKAction.sequence([
+            SKAction.scaleY(to: 0.3415, duration: 0.2),
+            SKAction.scaleY(to: 0.3, duration: 1),
+            SKAction.scaleY(to: 0.27, duration: 1.3),
+            SKAction.scaleY(to: 0.3, duration: 0.1),
+        ])
+        
         ballShineShap.run(SKAction.repeatForever(actionForScale))
         ballShineShap.run(SKAction.repeatForever(actionForShine))
         posterShineShap.run(SKAction.repeatForever(actionForScale))
         posterShineShap.run(SKAction.repeatForever(actionForShine))
+        monsterSprite.run(SKAction.repeatForever(monsterAction))
     }
     
     func jumpscareAction(){
@@ -116,7 +153,6 @@ class FirstScene: SKScene {
             SKAction.wait(forDuration: 3),
             SKAction.run {
                 self.saturation.filter?.setValue(0, forKey: kCIInputSaturationKey)
-                
             },
         ])
         
@@ -148,14 +184,16 @@ class FirstScene: SKScene {
         self.run(actionsForSaturation)
         
         self.darkness2.run(actions){
+            self.addChild(self.monsterSprite)
+            self.shineAction()
             self.darkness2.alpha = 0.5
             self.darkness1.alpha = 1
         }
         self.jumpscare.run(actions){
             self.jumpscare.alpha = 0
+            
         }
     }
     
 }
-
 

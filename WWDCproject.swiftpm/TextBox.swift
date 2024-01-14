@@ -11,11 +11,7 @@ class GenericTextBox: SKNode{
     
     var backgroundT: SKSpriteNode = SKSpriteNode(color: SKColor.bgColor.withAlphaComponent(0.97), size: SceneConfigs.shared.size)
     
-    var infoNode: SKSpriteNode = {
-        let node = SKSpriteNode(imageNamed: "InfoAboutTheLevel")
-        node.setScale(0.7)
-        return node
-    }()
+    var infoNode: SKSpriteNode
     
     var nextButton: SKSpriteNode = SKSpriteNode(color: .red, size: CGSize(width: 216, height: 91.5))
     
@@ -47,30 +43,45 @@ class GenericTextBox: SKNode{
         }
     }
     
-    init(title: String, text: String) {
+    init(title: String, text: String, nameOfTheSprite: TextboxAssets) {
         self.title = title
         self.text = text
         titleLabel = SKLabelNode(text: title)
         textLabel = SKLabelNode(text: text)
+        infoNode = SKSpriteNode(imageNamed: nameOfTheSprite.rawValue)
         
         super.init()
 
+        switch nameOfTheSprite {
+        case .trigger:
+            infoNode.position = CGPoint(x: 50, y: 0)
+            infoNode.setScale(0.3415)
+            titleLabel.position = CGPoint(x: -350, y: 80)
+            textLabel.position = CGPoint(x: -350, y: -100)
+            textLabel.preferredMaxLayoutWidth = 310
+            nextButton.position = CGPoint(x: 290, y: -210)
+        case .first:
+            infoNode.setScale(0.7)
+            titleLabel.position = CGPoint(x: -320, y: 40)
+            textLabel.position = CGPoint(x: -320, y: -55)
+            textLabel.preferredMaxLayoutWidth = 600
+            nextButton.position = CGPoint(x: 290, y: -70)
+        }
+        
         titleLabel.fontColor = .white
         titleLabel.fontName = "Futura Bold"
         titleLabel.fontSize = 37.5
-        titleLabel.position = CGPoint(x: -320, y: 40)
         titleLabel.horizontalAlignmentMode = .left
         
         textLabel.fontColor = .white
         textLabel.fontName = "Futura Regular"
         textLabel.fontSize = 22.5
-        textLabel.position = CGPoint(x: -320, y: -55)
+        
         textLabel.numberOfLines = 2
         textLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
-        textLabel.preferredMaxLayoutWidth = 600
+        
         textLabel.horizontalAlignmentMode = .left
         
-        nextButton.position = CGPoint(x: 290, y: -70)
         nextButton.alpha = 0
         
         addChild(backgroundT)
@@ -89,4 +100,9 @@ class GenericTextBox: SKNode{
     func addAction(callback: @escaping () -> Void){
         self.callback = callback
     }
+}
+
+enum TextboxAssets: String {
+    case trigger = "Triggers"
+    case first = "InfoAboutTheLevel"
 }

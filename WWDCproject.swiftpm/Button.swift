@@ -18,7 +18,6 @@ class SKButton: SKNode {
         button = label
         
         mask = SKSpriteNode(color: .black, size: button.frame.size)
-//        mask.position.y = +20
         mask.alpha = 0
         mask.anchorPoint = CGPoint(x: 0.5, y: 0.25)
         mask.setScale(1.5)

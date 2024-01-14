@@ -8,25 +8,6 @@
 import SpriteKit
 import SwiftUI
 
-struct DisplayTest: View {
-    
-    var storyScene: SKScene {
-        let scene = StoryScene()
-        scene.size = CGSize(width: 1024, height: 1366)
-        scene.scaleMode = .aspectFill
-        return scene
-    }
-    
-    var body: some View {
-        SpriteView(scene: storyScene)
-            .ignoresSafeArea()
-    }
-}
-
-#Preview {
-    DisplayTest()
-}
-
 class StoryScene: SKScene {
     
     let storyData = [
@@ -75,7 +56,7 @@ class StoryScene: SKScene {
         var nextButton = SKLabelNode(text: "Next")
         nextButton.fontColor = .lightTextColor
         nextButton.fontName = "Futura"
-        nextButton.fontSize = 30
+        nextButton.fontSize = 23
         nextButton.color = .white
         
         let button = SKButton(label: nextButton)
@@ -92,7 +73,7 @@ class StoryScene: SKScene {
         addElements()
     }
     
-    func firstNextButtonAction(){
+    private func firstNextButtonAction(){
         if storyNumber < 4 {
             storyNumber += 1
             self.mainText.text = self.storyData[self.storyNumber][0]
@@ -115,11 +96,11 @@ class StoryScene: SKScene {
             }
             
         } else {
-            nextLevel(MainMenu(), transition: .crossFade(withDuration: 3))
+            nextLevel(FirstScene(), transition: .crossFade(withDuration: 3))
         }
     }
     
-    func sceneConfiguration(){
+    private func sceneConfiguration(){
         self.mainText.text = self.storyData[self.storyNumber][0]
         self.secondText.text = self.storyData[self.storyNumber][1]
         
@@ -130,7 +111,9 @@ class StoryScene: SKScene {
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
         
         mainText.position = CGPoint(x: 0, y: -170)
+        mainText.fontName = "Futura Semibold"
         secondText.position = CGPoint(x: 0, y: -220)
+        secondText.fontName = "Futura Semibold"
         
         nextButton.position = CGPoint(x: size.width/2 - 95, y: -size.height/2 + size.height/3.5)
         nextButton.addAction {
@@ -139,7 +122,7 @@ class StoryScene: SKScene {
         
     }
     
-    func addElements(){
+    private func addElements(){
         addChild(story1)
         addChild(mainText)
         addChild(secondText)

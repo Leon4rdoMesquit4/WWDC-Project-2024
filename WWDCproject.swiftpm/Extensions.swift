@@ -19,7 +19,7 @@ extension SKScene{
     func nextLevel(_ a: String, direction: SKTransitionDirection){
         if let scene = SKScene(fileNamed: a){
             scene.scaleMode = .aspectFill
-            scene.size = CGSize(width: 1024, height: 1366)
+            scene.size = SceneConfigs.shared.size
             self.view?.presentScene(scene, transition: SKTransition.push(with: direction, duration: 3))
         }
     }
@@ -27,14 +27,14 @@ extension SKScene{
     func nextLevel(_ a: String, transition: SKTransition){
         if let scene = SKScene(fileNamed: a){
             scene.scaleMode = .aspectFill
-            scene.size = CGSize(width: 1024, height: 1366)
+            scene.size = SceneConfigs.shared.size
             self.view?.presentScene(scene, transition: transition)
         }
     }
     
     func nextLevel(_ a: SKScene, transition: SKTransition){
         a.scaleMode = .aspectFill
-        a.size = CGSize(width: 1024, height: 1366)
+        a.size = SceneConfigs.shared.size
         self.view?.presentScene(a, transition: transition)
     }
     

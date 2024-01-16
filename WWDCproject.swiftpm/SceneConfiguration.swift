@@ -7,8 +7,8 @@
 
 import Foundation
 
-class SceneConfigs {
-    static var shared = SceneConfigs()
+class SceneConfiguration {
+    static var shared = SceneConfiguration()
     
     var size = CGSize(width: 1024, height: 1366)
 }

@@ -5,7 +5,7 @@ struct ContentView: View {
     
     var scene: SKScene {
         let scene = MainMenu()
-        scene.size = SceneConfigs.shared.size
+        scene.size = SceneConfiguration.shared.size
         scene.scaleMode = .aspectFill
         return scene
     }

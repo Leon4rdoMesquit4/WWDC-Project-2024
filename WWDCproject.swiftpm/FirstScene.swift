@@ -8,26 +8,6 @@
 import SpriteKit
 import SwiftUI
 
-
-struct DisplayTest: View {
-    
-    var storyScene: SKScene {
-        let scene = FirstScene()
-        scene.size = SceneConfigs.shared.size
-        scene.scaleMode = .aspectFill
-        return scene
-    }
-    
-    var body: some View {
-        SpriteView(scene: storyScene)
-            .ignoresSafeArea()
-    }
-}
-
-#Preview {
-    DisplayTest()
-}
-
 class FirstScene: SKScene {
     
     var textBox: GenericTextBox = GenericTextBox(title: "School time", text: "The monster is trying to attack John’s school. Help John to discover what is making the monster come back from the shadows!", nameOfTheSprite: .first)
@@ -38,7 +18,7 @@ class FirstScene: SKScene {
     
     let jumpscare: SKSpriteNode = SKSpriteNode(imageNamed: "Story4")
     
-    let darkness2: SKSpriteNode = SKSpriteNode(color: .black, size: SceneConfigs.shared.size)
+    let darkness2: SKSpriteNode = SKSpriteNode(color: .black, size: SceneConfiguration.shared.size)
     
     let darkness1: SKSpriteNode = SKSpriteNode(imageNamed: "Darkness1")
     

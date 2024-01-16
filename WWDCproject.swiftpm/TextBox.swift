@@ -9,7 +9,7 @@ import SpriteKit
 
 class GenericTextBox: SKNode{
     
-    var backgroundT: SKSpriteNode = SKSpriteNode(color: SKColor.bgColor.withAlphaComponent(0.97), size: SceneConfigs.shared.size)
+    var backgroundT: SKSpriteNode = SKSpriteNode(color: SKColor.bgColor.withAlphaComponent(0.97), size: SceneConfiguration.shared.size)
     
     var infoNode: SKSpriteNode
     

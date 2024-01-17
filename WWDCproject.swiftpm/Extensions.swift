@@ -12,6 +12,7 @@ extension SKColor {
     static var bgColor = SKColor(named: "Backcolor") ?? .black.withAlphaComponent(0.9)
     static var lightTextColor = SKColor.white
     static var darkTextColor = SKColor(named: "TextColor") ?? .black.withAlphaComponent(0.9)
+    static var magicPurple = SKColor(named: "MagicPurple") ?? .purple
 }
 
 extension SKScene{

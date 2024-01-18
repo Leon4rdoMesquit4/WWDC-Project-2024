@@ -8,26 +8,6 @@
 import SpriteKit
 import SwiftUI
 
-struct DisplayTest: View {
-    
-    var storyScene: SKScene {
-        let scene = BreathScene()
-        scene.size = SceneConfiguration.shared.size
-        scene.scaleMode = .aspectFill
-        return scene
-    }
-    
-    var body: some View {
-        SpriteView(scene: storyScene)
-            .ignoresSafeArea()
-            .statusBarHidden()
-    }
-}
-
-#Preview {
-    DisplayTest()
-}
-
 class BreathScene: SKScene {
     var textbox = GenericTextBox(title: "Meditation time", text: "A way to control your anxious and get more relax is to breath. When you do that you control your heart rate and can make the monster dissapear for a while.", nameOfTheSprite: .first)
     

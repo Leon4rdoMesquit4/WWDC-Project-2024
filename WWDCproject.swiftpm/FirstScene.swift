@@ -176,4 +176,3 @@ class FirstScene: SKScene {
     }
     
 }
-

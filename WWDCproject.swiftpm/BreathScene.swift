@@ -31,6 +31,8 @@ struct DisplayTest: View {
 class BreathScene: SKScene {
     var textbox = GenericTextBox(title: "Meditation time", text: "A way to control your anxious and get more relax is to breath. When you do that you control your heart rate and can make the monster dissapear for a while.", nameOfTheSprite: .first)
     
+    var finalTextbox = GenericTextBox(title: "Congrats!", text: "John learned how to control his breath and heart rate. It will help him in his fight against the monster", nameOfTheSprite: .first)
+    
     var holdTextLabel = SKLabelNode(text: "PRESS AND HOLD")
     var bpmTextLabel = SKLabelNode(text: "108 bpm")
 //    var messageTextLabel = SKLabelNode(text: "Control John’s breath and your heart rate")
@@ -42,9 +44,9 @@ class BreathScene: SKScene {
     // The best size 137.25
     
     var isOnboardingEnded: Bool = false
-    var firstBreathIsEnded: Bool = false
-    var secondBreathIsEnded: Bool = false
-    var touchBeg: Bool = false
+    var isBreathing: Bool = false
+    var breathCount: Int = 0
+    var touchBeg: Bool = true
     
     override func didMove(to view: SKView) {
         backgroundColor = .bgColor
@@ -87,6 +89,14 @@ class BreathScene: SKScene {
             self.fadeFirstSceneAlpha()
         }
         
+        finalTextbox.addAction {
+            self.nextLevel(FinalScene(), transition: .crossFade(withDuration: 1))
+        }
+        
+        finalTextbox.backgroundT.alpha = 0
+        finalTextbox.setScale(0)
+        finalTextbox.position = CGPoint(x: 300, y: -300)
+        
         addChild(mainCircle)
         addChild(middleCircle)
         addChild(centerCircle)
@@ -99,23 +109,12 @@ class BreathScene: SKScene {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if isOnboardingEnded{
-            if !firstBreathIsEnded {
+            if !isBreathing{
                 coloredCircle.run(SKAction.scale(to: 100, duration: 4)){
                     self.holdTextLabel.text = "WAIT"
-                    self.run(SKAction.wait(forDuration: 4)){
-                        self.firstBreathIsEnded = true
-                        print("OPA")
+                    self.coloredCircle.run(SKAction.wait(forDuration: 4)){
+                        self.isBreathing = true
                         self.holdTextLabel.text = "SOLTE"
-                    }
-                }
-                removeCirclesAnimation()
-            }
-            else if firstBreathIsEnded && !secondBreathIsEnded {
-                coloredCircle.run(SKAction.scale(to: 100, duration: 4)){
-                    self.holdTextLabel.text = "WAIT"
-                    self.run(SKAction.wait(forDuration: 4)){
-                        self.holdTextLabel.text = "SOLTE"
-                        self.secondBreathIsEnded = true
                     }
                 }
                 removeCirclesAnimation()
@@ -123,24 +122,44 @@ class BreathScene: SKScene {
         }
     }
     
+    override func update(_ currentTime: TimeInterval) {
+        print(isBreathing)
+    }
+    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        setUpTouchEnded()
+        if touchBeg{
+            setUpTouchEnded()
+        }
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        setUpTouchEnded()
+        if touchBeg{
+            setUpTouchEnded()
+        }
     }
     
     func setUpTouchEnded(){
         if isOnboardingEnded {
-            if secondBreathIsEnded {
-                coloredCircle.run(SKAction.scale(to: 700, duration: 4))
-            } else if firstBreathIsEnded {
-                coloredCircle.run(SKAction.scale(to: 1, duration: 4)){
-                    self.holdTextLabel.text = "PRESS AND HOLD"
-                    self.infiniteCircleAnimation()
+            if isBreathing && breathCount == 1 {
+                touchBeg = false
+                coloredCircle.run(SKAction.scale(to: 1, duration: 4)){ [self] in
+                    coloredCircle.run(SKAction.scale(to: 2000, duration: 0.2)){ [self] in
+                        addChild(finalTextbox)
+                        
+                        finalTextbox.run(SKAction.scale(to: 1, duration: 0.2))
+                        finalTextbox.run(SKAction.move(to: CGPoint(x: 0, y: 0), duration: 0.2))
+                    }
                 }
-            } else if (!firstBreathIsEnded) || (firstBreathIsEnded && !secondBreathIsEnded){
+            } else if isBreathing && breathCount == 0 {
+                touchBeg = false
+                coloredCircle.run(SKAction.scale(to: 1, duration: 4)){ [self] in
+                    holdTextLabel.text = "PRESS AND HOLD"
+                    infiniteCircleAnimation()
+                    isBreathing = false
+                    touchBeg = true
+                    breathCount = 1
+                }
+            } else if !isBreathing {
                 touchCancelledBefore()
             }
         }

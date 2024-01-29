@@ -74,6 +74,9 @@ class FirstScene: SKScene {
             self.jumpscareAction()
         }
         
+        triggerTextBox.addAction {
+            self.nextLevel(BreathScene(), transition: .fade(withDuration: 0.1))
+        }
         
     }
     

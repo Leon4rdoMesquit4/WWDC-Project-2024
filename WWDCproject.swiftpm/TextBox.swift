@@ -17,16 +17,18 @@ class GenericTextBox: SKNode{
     
     var title: String
     var text: String
+    var nameOfTheSprite: TextboxAssets
     let titleLabel: SKLabelNode
     let textLabel: SKLabelNode
     
     var callback: (() -> Void)? = nil
     
+    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
             
-            if nextButton.contains(location) {
+            if nextButton.contains(location) && nameOfTheSprite == .first {
                 infoNode.run(SKAction.rotate(toAngle: -0.5, duration: 2))
                 infoNode.run(SKAction.moveTo(y: 50, duration: 2))
                 infoNode.run(SKAction.scale(to: 5, duration: 2))
@@ -39,6 +41,10 @@ class GenericTextBox: SKNode{
                         self.callback!()
                     }
                 }
+            } else if nextButton.contains(location) && nameOfTheSprite == .trigger {
+                if self.callback != nil{
+                    self.callback!()
+                }
             }
         }
     }
@@ -49,7 +55,7 @@ class GenericTextBox: SKNode{
         titleLabel = SKLabelNode(text: title)
         textLabel = SKLabelNode(text: text)
         infoNode = SKSpriteNode(imageNamed: nameOfTheSprite.rawValue)
-        
+        self.nameOfTheSprite = nameOfTheSprite
         super.init()
 
         switch nameOfTheSprite {

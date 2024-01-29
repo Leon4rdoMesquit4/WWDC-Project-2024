@@ -33,6 +33,7 @@ class FinalScene: SKScene {
     var rain: RainAnimation = RainAnimation()
     var textBox = GenericTextBox(title: "Fight time", text: "Now it’s time to confront your fears and come back to the beach! Use the deep breath tecnique that John learned!", nameOfTheSprite: .first)
     var grayBeach = SKSpriteNode(imageNamed: "Beach")
+    var coloredBeach = SKSpriteNode(imageNamed: "ColoredBeach")
     var monsterV1 = SKSpriteNode(imageNamed: "Mv1")
     var shadow = SKSpriteNode(imageNamed: "Darkness")
     var shadow2 = SKSpriteNode(imageNamed: "Darkness")
@@ -40,8 +41,6 @@ class FinalScene: SKScene {
     let badText1 = SKLabelNode(text: "You are a loser")
     let badText2 = SKLabelNode(text: "You don't deserve to be alive")
     let badText3 = SKLabelNode(text: "No one loves you")
-    
-    let darkness = SKShapeNode(rect: CGRect(x: -Int(SceneConfiguration.shared.size.width)/2, y: -Int(SceneConfiguration.shared.size.height)/2, width: Int(SceneConfiguration.shared.size.width), height: Int(SceneConfiguration.shared.size.height)))
     
     var breathTime1 = BreathMechanic()
     var breathTime2 = BreathMechanic()
@@ -51,9 +50,7 @@ class FinalScene: SKScene {
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
         monsterV1.anchorPoint = CGPoint(x: 1, y: 0)
         
-        darkness.fillColor = .bgColor
-        darkness.strokeColor = .clear
-        
+        coloredBeach.setScale(0.3415)
         grayBeach.setScale(0.3415)
         monsterV1.setScale(0.3415)
         shadow.setScale(0.8)
@@ -62,36 +59,37 @@ class FinalScene: SKScene {
         
         shadow.alpha = 0.6
         shadow2.alpha = 0
+        coloredBeach.alpha = 0
         
         addChild(grayBeach)
-        
+        addChild(coloredBeach)
         
         addChild(textBox)
         
         textBox.addAction { [self] in
             run(SKAction.wait(forDuration: 1)){ [self] in
+                rain.alpha = 0
+                shadow.alpha = 0
+                monsterV1.alpha = 0
+                
                 addChild(monsterV1)
                 
-//                monsterAnimation()
+                monsterV1Animation()
                 addChild(shadow2)
-//                monsterV1Attack()
-                
-                rain.alpha = 0
+                monsterV1Attack()
                 
                 addChild(rain)
                 addChild(shadow)
                 
                 rain.run(SKAction.fadeAlpha(to: 1, duration: 2))
                 shadow.run(SKAction.fadeAlpha(to: 1, duration: 2))
-                
-                addChild(darkness)
-                darkness.zPosition = 10
-                darkness.alpha = 0
+                monsterV1.run(SKAction.fadeAlpha(to: 1, duration: 1))
+
             }
         }
         
         breathTime1.addAction {
-            
+            self.setBreatTime1Action()
         }
         
         breathTime2.addAction {
@@ -99,7 +97,10 @@ class FinalScene: SKScene {
         }
     }
     
-    func monsterAnimation(){
+    
+    //MARK: - First monster
+    
+    func monsterV1Animation(){
         monsterV1.run(SKAction.repeatForever(SKAction.sequence([
             SKAction.scaleY(to: 0.347, duration: 2),
             SKAction.scaleY(to: 0.35, duration: 1),
@@ -118,7 +119,7 @@ class FinalScene: SKScene {
     
     func monsterV1Attack(){
         
-        run(SKAction.wait(forDuration: 3)){ [self] in
+        run(SKAction.wait(forDuration: 4)){ [self] in
             badText1.zRotation = CGFloat.pi / 16
             badText2.zRotation = -CGFloat.pi / 32
             badText3.zRotation = CGFloat.pi / 16
@@ -184,7 +185,7 @@ class FinalScene: SKScene {
             ])
             
             let sequence2 = SKAction.sequence([
-                SKAction.fadeAlpha(to: 1, duration: 0),
+                SKAction.fadeAlpha(to: 0.7, duration: 0),
                 SKAction.scale(to: 5, duration: 2),
             ])
             
@@ -200,9 +201,34 @@ class FinalScene: SKScene {
                 SKAction.wait(forDuration: waitAfter),
             ])))
         }
+        
+        run(SKAction.wait(forDuration: 6)){
+            self.setRespirationN1()
+        }
     }
     
-    func setRespiration(){
+    func setRespirationN1(){
+        breathTime1.alpha = 0
+        addChild(breathTime1)
+        breathTime1.run(SKAction.fadeAlpha(to: 1, duration: 1.4))
+    }
+    
+    func setBreatTime1Action(){
+        monsterV1.removeFromParent()
+        removeActionAndAlpha(node: badText1)
+        removeActionAndAlpha(node: badText2)
+        removeActionAndAlpha(node: badText3)
+        removeActionAndAlpha(node: shadow2)
+        
+        func removeActionAndAlpha(node: SKNode){
+            node.removeAllActions()
+            node.alpha = 0
+        }
+        
+        coloredBeach.alpha = 0.1
         
     }
+    
+    //MARK: - Second monster
+    
 }

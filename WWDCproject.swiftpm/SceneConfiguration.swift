@@ -11,4 +11,6 @@ class SceneConfiguration {
     static var shared = SceneConfiguration()
     
     var size = CGSize(width: 1024, height: 1366)
+    var height = 1366
+    var width = 1024
 }

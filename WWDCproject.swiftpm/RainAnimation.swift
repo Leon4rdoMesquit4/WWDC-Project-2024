@@ -20,9 +20,7 @@ class RainAnimation: SKNode {
         
         rainSprite2.setScale(0.3415)
         rainSprite2.xScale = -0.3415
-        
-        print(rainSprite1.size.height)
-        
+                
         addChild(rainSprite1)
         addChild(rainSprite2)
         fallingRainAnimation()

@@ -52,9 +52,18 @@ class BreathMechanic: SKNode {
     
     var callback: (() -> Void)?
     
+    let darkness = SKShapeNode(rect: CGRect(x: -Int(SceneConfiguration.shared.width)/2, y: -Int(SceneConfiguration.shared.height)/2, width: Int(SceneConfiguration.shared.width), height: Int(SceneConfiguration.shared.height)))
+    
+    
     override init() {
         
         super.init()
+        
+        darkness.fillColor = .bgColor
+        darkness.strokeColor = .clear
+        darkness.alpha = 0.7
+        
+        addChild(darkness)
         
         mainCircle.alpha = 0
         mainCircle.setScale(1.5)
@@ -93,6 +102,7 @@ class BreathMechanic: SKNode {
         self.firstCircleAnimation(circle: self.mainCircle)
         self.secondCircleAnimation(circle: self.middleCircle)
         self.fadeFirstSceneAlpha()
+        darkness.run(SKAction.fadeAlpha(to: 0.8, duration: 1.4))
         
         isUserInteractionEnabled = true
     }
@@ -134,8 +144,9 @@ class BreathMechanic: SKNode {
         centerCircle.removeFromParent()
         holdTextLabel.removeFromParent()
         bpmTextLabel.removeFromParent()
+        darkness.removeFromParent()
         
-        coloredCircle.run(SKAction.fadeAlpha(to: 0, duration: 1))
+        coloredCircle.run(SKAction.fadeAlpha(to: 0, duration: 2))
         callback()
     }
     

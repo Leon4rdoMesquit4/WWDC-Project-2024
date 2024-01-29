@@ -102,10 +102,7 @@ class BreathScene: SKScene {
         }
     }
     
-    override func update(_ currentTime: TimeInterval) {
-        print(isBreathing)
-    }
-    
+
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if touchBeg{
             setUpTouchEnded()

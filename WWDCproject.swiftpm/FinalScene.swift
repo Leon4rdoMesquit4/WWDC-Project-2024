@@ -69,7 +69,7 @@ class FinalScene: SKScene {
         monsterV2.setScale(0.8)
         monsterV3.setScale(0.75)
         shadow.setScale(0.8)
-        myImage.setScale(0.35)
+        myImage.setScale(0.75)
         theEndText.setScale(0.75)
         
         //ZPosition Definition

@@ -129,14 +129,14 @@ class StoryScene: SKScene {
         addChild(nextButton)
     }
     
-    func switchThe(_ a: SKSpriteNode
+    private func switchThe(_ a: SKSpriteNode
                    , for img : SKSpriteNode){
         a.removeFromParent()
         self.addChild(img)
     }
     
-    func changeTextColorToLightMode(){
-        self.nextButton.button.color = SKColor.darkTextColor
+    private func changeTextColorToLightMode(){
+        self.nextButton.changeTheColor()
         self.mainText.fontColor = .darkTextColor
         self.secondText.fontColor = .darkTextColor
     }

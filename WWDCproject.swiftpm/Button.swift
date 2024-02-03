@@ -107,4 +107,9 @@ class SKButton: SKNode {
     func addAction(action: @escaping () -> Void){
         self.action = action
     }
+    
+    func changeTheColor(){
+        button.color = .darkTextColor
+        button.fontColor = .darkTextColor
+    }
 }

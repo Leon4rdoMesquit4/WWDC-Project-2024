@@ -10,9 +10,9 @@ import SwiftUI
 
 class FirstScene: SKScene {
     
-    var textBox: GenericTextBox = GenericTextBox(title: "School time", text: "The monster is trying to attack John’s school. Help John to discover what is making the monster come back from the shadows!", nameOfTheSprite: .first)
+    var textBox: GenericTextBox = GenericTextBox(title: "School time", text: "The monster is trying to attack John’s school. Help John to discover what is making the monster come back from the shadows!", nameOfTheSprite: .first, finalAnimation: true)
     
-    var triggerTextBox: GenericTextBox = GenericTextBox(title: "Triggers", text: "The monster gets strong when John see beach elements.\n\nIt reminds him of bad memories and make John anxious and sad. ", nameOfTheSprite: .trigger)
+    var triggerTextBox: GenericTextBox = GenericTextBox(title: "Triggers", text: "The monster gets strong when John see beach elements.\n\nIt reminds him of bad memories and make John anxious and sad. ", nameOfTheSprite: .trigger, finalAnimation: false)
     
     let coloredSchool: SKSpriteNode = SKSpriteNode(imageNamed: "ColoredSchool")
     
@@ -75,7 +75,7 @@ class FirstScene: SKScene {
         }
         
         triggerTextBox.addAction {
-            self.nextLevel(BreathScene(), transition: .fade(withDuration: 0.1))
+            self.nextLevel(BreathScene(), transition: .fade(withDuration: 0.5))
         }
         
     }

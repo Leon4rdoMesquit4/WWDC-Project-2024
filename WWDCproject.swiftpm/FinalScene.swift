@@ -31,7 +31,7 @@ struct DisplayTest: View {
 class FinalScene: SKScene {
     
     var rain: RainAnimation = RainAnimation()
-    var textBox = GenericTextBox(title: "Fight time", text: "Now it’s time to confront your fears and come back to the beach! Use the deep breath tecnique that John learned!", nameOfTheSprite: .first)
+    var textBox = GenericTextBox(title: "Fight time", text: "Now it’s time to confront your fears and come back to the beach! Use the deep breath tecnique that John learned!", nameOfTheSprite: .first, finalAnimation: true)
     var grayBeach = SKSpriteNode(imageNamed: "Beach")
     var coloredBeach = SKSpriteNode(imageNamed: "ColoredBeach")
     var monsterV1 = SKSpriteNode(imageNamed: "Mv1")
@@ -39,6 +39,9 @@ class FinalScene: SKScene {
     var monsterV3 = SKSpriteNode(imageNamed: "Mv3")
     var shadow = SKSpriteNode(imageNamed: "Darkness")
     var shadow2 = SKSpriteNode(imageNamed: "Darkness")
+    var myImage = SKSpriteNode(imageNamed: "myImage")
+    var theEndText = SKSpriteNode(imageNamed: "theEnd")
+    let finalDarkness = SKShapeNode(rect: CGRect(x: -Int(SceneConfiguration.shared.width)/2, y: -Int(SceneConfiguration.shared.height)/2, width: Int(SceneConfiguration.shared.width), height: Int(SceneConfiguration.shared.height)))
     
     let badText1 = SKLabelNode(text: "You are a loser")
     let badText2 = SKLabelNode(text: "You don't deserve to be alive")
@@ -60,12 +63,14 @@ class FinalScene: SKScene {
         monsterV2.anchorPoint = CGPoint(x: 1, y: 0)
         monsterV3.anchorPoint = CGPoint(x: 1, y: 0)
         
-        coloredBeach.setScale(0.3415)
-        grayBeach.setScale(0.3415)
+        coloredBeach.setScale(0.343)
+        grayBeach.setScale(0.343)
         monsterV1.setScale(0.3415)
         monsterV2.setScale(0.8)
         monsterV3.setScale(0.75)
         shadow.setScale(0.8)
+        myImage.setScale(0.35)
+        theEndText.setScale(0.75)
         
         //ZPosition Definition
         coloredBeach.zPosition = 0
@@ -84,6 +89,7 @@ class FinalScene: SKScene {
         monsterV1.position = CGPoint(x: 300, y: -120)
         monsterV2.position = CGPoint(x: 280, y: -120)
         monsterV3.position = CGPoint(x: 200, y: -120)
+        myImage.position = CGPoint(x: -20, y: 0)
         
         shadow.alpha = 0.6
         shadow2.alpha = 0
@@ -91,6 +97,9 @@ class FinalScene: SKScene {
         badText1.alpha = 0
         badText2.alpha = 0
         badText3.alpha = 0
+        
+        finalDarkness.fillColor = .bgColor
+        finalDarkness.strokeColor = .clear
         
         addChild(grayBeach)
         addChild(coloredBeach)
@@ -273,11 +282,11 @@ class FinalScene: SKScene {
     
     func finalAgressiveMessages(){
         
-        action(node: badText1, before: 2, x: 0, y: -140)
+        action(node: badText1, before: 1, x: 0, y: -140)
         
-        action(node: badText2, before: 4, x: 40, y: -130)
+        action(node: badText2, before: 2, x: 40, y: -130)
         
-        action(node: badText3, before: 6, x: 70, y: -135)
+        action(node: badText3, before: 3, x: 70, y: -135)
         
         func action(node: SKLabelNode, before: CGFloat, x: CGFloat, y: CGFloat){
             
@@ -310,7 +319,7 @@ class FinalScene: SKScene {
             ]))
         }
            
-        run(.wait(forDuration: 8)){
+        run(.wait(forDuration: 4)){
             self.monsterV3.run( .sequence([
                 .move(by: CGVector(dx: 10, dy: 0), duration: 0.2),
                 .move(by: CGVector(dx: -10, dy: 0), duration: 0.2),
@@ -325,8 +334,9 @@ class FinalScene: SKScene {
                     .scale(to: 0.75, duration: 0.5),
                 ])))
                 
-                self.shadow.run(SKAction.fadeAlpha(to: 0, duration: 4)){
-                    self.shadow.removeFromParent()
+                self.shadow.run(SKAction.fadeAlpha(to: 0, duration: 4)){ [self] in
+                    shadow.removeFromParent()
+                    theEndMessage()
                 }
                 
                 self.coloredBeach.run(SKAction.fadeAlpha(to: 1, duration: 4)){
@@ -341,6 +351,24 @@ class FinalScene: SKScene {
 
         }
         
+    }
+    
+    func theEndMessage(){
+        myImage.alpha = 0
+        finalDarkness.alpha = 0
+        theEndText.alpha = 0
+        addChild(finalDarkness)
+        addChild(myImage)
+        addChild(theEndText)
+        
+        myImage.run(.fadeAlpha(to: 1, duration: 2))
+        finalDarkness.run(.fadeAlpha(to: 0.96, duration: 2))
+        
+        run(.wait(forDuration: 5)){ [self] in
+            myImage.run(.fadeAlpha(to: 0, duration: 2))
+            theEndText.run(.fadeAlpha(to: 1, duration: 2))
+            finalDarkness.run(.fadeAlpha(to: 1, duration: 2))
+        }
     }
     
 }

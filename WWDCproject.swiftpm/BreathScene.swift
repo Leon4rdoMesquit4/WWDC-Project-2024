@@ -9,9 +9,9 @@ import SpriteKit
 import SwiftUI
 
 class BreathScene: SKScene {
-    var textbox = GenericTextBox(title: "Meditation time", text: "A way to control your anxious and get more relax is to breath. When you do that you control your heart rate and can make the monster dissapear for a while.", nameOfTheSprite: .first)
+    var textbox = GenericTextBox(title: "Meditation time", text: "A way to control your anxious and get more relax is to breath. When you do that you control your heart rate and can make the monster dissapear for a while.", nameOfTheSprite: .first, finalAnimation: true)
     
-    var finalTextbox = GenericTextBox(title: "Congrats!", text: "John learned how to control his breath and heart rate. It will help him in his fight against the monster", nameOfTheSprite: .first)
+    var finalTextbox = GenericTextBox(title: "Congrats!", text: "John learned how to control his breath and heart rate. It will help him in his fight against the monster", nameOfTheSprite: .first, finalAnimation: false)
     
     var holdTextLabel = SKLabelNode(text: "PRESS AND HOLD")
     var bpmTextLabel = SKLabelNode(text: "108 bpm")
@@ -70,7 +70,7 @@ class BreathScene: SKScene {
         }
         
         finalTextbox.addAction {
-            self.nextLevel(FinalScene(), transition: .crossFade(withDuration: 1))
+            self.nextLevel(FinalScene(), transition: .fade(withDuration: 1))
         }
         
         finalTextbox.backgroundT.alpha = 0
@@ -90,9 +90,9 @@ class BreathScene: SKScene {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if isOnboardingEnded{
             if !isBreathing{
-                coloredCircle.run(SKAction.scale(to: 100, duration: 4)){
+                coloredCircle.run(SKAction.scale(to: 100, duration: 3)){
                     self.holdTextLabel.text = "WAIT"
-                    self.coloredCircle.run(SKAction.wait(forDuration: 4)){
+                    self.coloredCircle.run(SKAction.wait(forDuration: 3)){
                         self.isBreathing = true
                         self.holdTextLabel.text = "SOLTE"
                     }
@@ -119,7 +119,7 @@ class BreathScene: SKScene {
         if isOnboardingEnded {
             if isBreathing && breathCount == 1 {
                 touchBeg = false
-                coloredCircle.run(SKAction.scale(to: 1, duration: 4)){ [self] in
+                coloredCircle.run(SKAction.scale(to: 1, duration: 3)){ [self] in
                     coloredCircle.run(SKAction.scale(to: 2000, duration: 0.2)){ [self] in
                         addChild(finalTextbox)
                         
@@ -129,7 +129,7 @@ class BreathScene: SKScene {
                 }
             } else if isBreathing && breathCount == 0 {
                 touchBeg = false
-                coloredCircle.run(SKAction.scale(to: 1, duration: 4)){ [self] in
+                coloredCircle.run(SKAction.scale(to: 1, duration: 3)){ [self] in
                     holdTextLabel.text = "PRESS AND HOLD"
                     infiniteCircleAnimation()
                     isBreathing = false

@@ -20,6 +20,7 @@ class GenericTextBox: SKNode{
     var nameOfTheSprite: TextboxAssets
     let titleLabel: SKLabelNode
     let textLabel: SKLabelNode
+    let finalAnimation: Bool
     
     var callback: (() -> Void)? = nil
     
@@ -29,14 +30,22 @@ class GenericTextBox: SKNode{
             let location = touch.location(in: self)
             
             if nextButton.contains(location) && nameOfTheSprite == .first {
-                infoNode.run(SKAction.rotate(toAngle: -0.5, duration: 2))
-                infoNode.run(SKAction.moveTo(y: 50, duration: 2))
-                infoNode.run(SKAction.scale(to: 5, duration: 2))
-                titleLabel.alpha = 0
-                textLabel.alpha = 0
                 
-                run(SKAction.fadeAlpha(to: 0, duration: 2)){
-                    self.removeFromParent()
+                if finalAnimation{
+                    
+                    infoNode.run(SKAction.rotate(toAngle: -0.5, duration: 2))
+                    infoNode.run(SKAction.moveTo(y: 50, duration: 2))
+                    infoNode.run(SKAction.scale(to: 5, duration: 2))
+                    titleLabel.alpha = 0
+                    textLabel.alpha = 0
+                    
+                    run(SKAction.fadeAlpha(to: 0, duration: 2)){
+                        self.removeFromParent()
+                        if self.callback != nil{
+                            self.callback!()
+                        }
+                    }
+                } else {
                     if self.callback != nil{
                         self.callback!()
                     }
@@ -49,13 +58,14 @@ class GenericTextBox: SKNode{
         }
     }
     
-    init(title: String, text: String, nameOfTheSprite: TextboxAssets) {
+    init(title: String, text: String, nameOfTheSprite: TextboxAssets, finalAnimation: Bool) {
         self.title = title
         self.text = text
         titleLabel = SKLabelNode(text: title)
         textLabel = SKLabelNode(text: text)
         infoNode = SKSpriteNode(imageNamed: nameOfTheSprite.rawValue)
         self.nameOfTheSprite = nameOfTheSprite
+        self.finalAnimation = finalAnimation
         super.init()
 
         switch nameOfTheSprite {

@@ -114,9 +114,9 @@ class BreathMechanic: SKNode {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if isOnboardingEnded{
             if !isBreathing{
-                coloredCircle.run(SKAction.scale(to: 100, duration: 4)){
+                coloredCircle.run(SKAction.scale(to: 100, duration: 3)){
                     self.holdTextLabel.text = "WAIT"
-                    self.coloredCircle.run(SKAction.wait(forDuration: 4)){
+                    self.coloredCircle.run(SKAction.wait(forDuration: 3)){
                         self.isBreathing = true
                         self.holdTextLabel.text = "SOLTE"
                     }
@@ -146,7 +146,7 @@ class BreathMechanic: SKNode {
         bpmTextLabel.removeFromParent()
         darkness.removeFromParent()
         
-        coloredCircle.run(SKAction.fadeAlpha(to: 0, duration: 4))
+        coloredCircle.run(SKAction.fadeAlpha(to: 0, duration: 3))
         callback()
     }
     
@@ -154,7 +154,7 @@ class BreathMechanic: SKNode {
         if isOnboardingEnded {
             if isBreathing {
                 touchBeg = false
-                coloredCircle.run(SKAction.scale(to: 1, duration: 4)){ [self] in
+                coloredCircle.run(SKAction.scale(to: 1, duration: 3)){ [self] in
                     coloredCircle.run(SKAction.scale(to: 2000, duration: 0.4)){
                         self.executeCallbackAction {
                             self.callback!()

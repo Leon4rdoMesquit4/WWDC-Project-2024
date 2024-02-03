@@ -35,6 +35,8 @@ class FinalScene: SKScene {
     var grayBeach = SKSpriteNode(imageNamed: "Beach")
     var coloredBeach = SKSpriteNode(imageNamed: "ColoredBeach")
     var monsterV1 = SKSpriteNode(imageNamed: "Mv1")
+    var monsterV2 = SKSpriteNode(imageNamed: "Mv2")
+    var monsterV3 = SKSpriteNode(imageNamed: "Mv3")
     var shadow = SKSpriteNode(imageNamed: "Darkness")
     var shadow2 = SKSpriteNode(imageNamed: "Darkness")
     
@@ -47,43 +49,75 @@ class FinalScene: SKScene {
     
     override func didMove(to view: SKView) {
         
+        setupScene()
+        setNodesActions()
+        
+    }
+    
+    func setupScene(){
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
         monsterV1.anchorPoint = CGPoint(x: 1, y: 0)
+        monsterV2.anchorPoint = CGPoint(x: 1, y: 0)
+        monsterV3.anchorPoint = CGPoint(x: 1, y: 0)
         
         coloredBeach.setScale(0.3415)
         grayBeach.setScale(0.3415)
         monsterV1.setScale(0.3415)
+        monsterV2.setScale(0.8)
+        monsterV3.setScale(0.75)
         shadow.setScale(0.8)
         
+        //ZPosition Definition
+        coloredBeach.zPosition = 0
+        grayBeach.zPosition = 0
+        monsterV1.zPosition = 1
+        monsterV2.zPosition = 1
+        shadow.zPosition = 2
+        shadow2.zPosition = 2
+        rain.zPosition = 3
+        badText1.zPosition = 2.5
+        badText2.zPosition = 2.5
+        badText3.zPosition = 2.5
+        breathTime1.zPosition = 4
+        breathTime2.zPosition = 4
+        
         monsterV1.position = CGPoint(x: 300, y: -120)
+        monsterV2.position = CGPoint(x: 280, y: -120)
+        monsterV3.position = CGPoint(x: 200, y: -120)
         
         shadow.alpha = 0.6
         shadow2.alpha = 0
         coloredBeach.alpha = 0
+        badText1.alpha = 0
+        badText2.alpha = 0
+        badText3.alpha = 0
         
         addChild(grayBeach)
         addChild(coloredBeach)
-        
         addChild(textBox)
-        
+        addChild(badText1)
+        addChild(badText2)
+        addChild(badText3)
+    }
+    
+    func setNodesActions(){
         textBox.addAction { [self] in
-            run(SKAction.wait(forDuration: 1)){ [self] in
+            run(.wait(forDuration: 1)){ [self] in
                 rain.alpha = 0
                 shadow.alpha = 0
                 monsterV1.alpha = 0
                 
                 addChild(monsterV1)
-                
-                monsterV1Animation()
+
                 addChild(shadow2)
-                monsterV1Attack()
+                monsterAttack(x: -200, y: 120, breath: breathTime1, monster: monsterV1, scale: 0.3415)
                 
                 addChild(rain)
                 addChild(shadow)
                 
-                rain.run(SKAction.fadeAlpha(to: 1, duration: 2))
-                shadow.run(SKAction.fadeAlpha(to: 1, duration: 2))
-                monsterV1.run(SKAction.fadeAlpha(to: 1, duration: 1))
+                rain.run(.fadeAlpha(to: 1, duration: 2))
+                shadow.run(.fadeAlpha(to: 1, duration: 2))
+                monsterV1.run(.fadeAlpha(to: 1, duration: 1))
 
             }
         }
@@ -93,33 +127,23 @@ class FinalScene: SKScene {
         }
         
         breathTime2.addAction {
-            
+            self.setBreatTime2Action()
         }
     }
     
-    
     //MARK: - First monster
     
-    func monsterV1Animation(){
-        monsterV1.run(SKAction.repeatForever(SKAction.sequence([
-            SKAction.scaleY(to: 0.347, duration: 2),
-            SKAction.scaleY(to: 0.35, duration: 1),
-            SKAction.scaleY(to: 0.347, duration: 1),
-            SKAction.scaleY(to: 0.3415, duration: 0.5),
+    func monsterAttack(x: CGFloat, y: CGFloat, breath: BreathMechanic, monster: SKSpriteNode, scale: CGFloat){
+        
+        monster.run(.repeatForever(.sequence([
+            .scale(to: scale * 1.0161, duration: 2),
+            .scale(to: scale * 1.0249, duration: 1),
+            .scale(to: scale * 1.0161, duration: 1),
+            .scale(to: scale , duration: 0.5),
             
         ])))
         
-        monsterV1.run(SKAction.repeatForever(SKAction.sequence([
-            SKAction.scaleX(to: 0.347, duration: 2),
-            SKAction.scaleX(to: 0.35, duration: 1),
-            SKAction.scaleX(to: 0.347, duration: 1),
-            SKAction.scaleX(to: 0.3415, duration: 0.5),
-        ])))
-    }
-    
-    func monsterV1Attack(){
-        
-        run(SKAction.wait(forDuration: 4)){ [self] in
+        run(.wait(forDuration: 4)){ [self] in
             badText1.zRotation = CGFloat.pi / 16
             badText2.zRotation = -CGFloat.pi / 32
             badText3.zRotation = CGFloat.pi / 16
@@ -132,44 +156,40 @@ class FinalScene: SKScene {
             badText2.setScale(0)
             badText3.setScale(0)
             
-            badText1.position = CGPoint(x: -200, y: 120)
-            badText2.position = CGPoint(x: -200, y: 120)
-            badText3.position = CGPoint(x: -200, y: 120)
+            badText1.position = CGPoint(x: x, y: y)
+            badText2.position = CGPoint(x: x, y: y)
+            badText3.position = CGPoint(x: x, y: y)
             
-            addChild(badText1)
-            addChild(badText2)
-            addChild(badText3)
-            
-            agressivesMessages()
+            agressivesMessages(monster: monster, msgXPosition: x, msgYPosition: y, scale: scale, breath: breath)
         }
     }
     
-    func agressivesMessages(){
+    func agressivesMessages(monster: SKSpriteNode, msgXPosition: CGFloat, msgYPosition: CGFloat, scale: CGFloat, breath: BreathMechanic){
         
-        monsterV1.removeAllActions()
+        monster.removeAllActions()
         
         let sequence = SKAction.sequence([
-            SKAction.scaleY(to: 0.32, duration: 0.25),
-            SKAction.scaleY(to: 0.3415, duration: 0.5),
-            SKAction.wait(forDuration: 1.25),
+            .scaleY(to: scale * 0.937, duration: 0.25),
+            .scaleY(to: scale, duration: 0.5),
+            .wait(forDuration: 1.25),
         ])
         
-        monsterV1.run(SKAction.repeatForever(SKAction.sequence([sequence, sequence, sequence])))
+        monster.run(.repeatForever(.sequence([sequence, sequence, sequence])))
         
         let sequence2 = SKAction.sequence([
-            SKAction.wait(forDuration: 0.5),
-            SKAction.fadeAlpha(to: 0.8, duration: 0.1),
-            SKAction.wait(forDuration: 1.1),
-            SKAction.fadeAlpha(to: 0, duration: 0.3),
+            .wait(forDuration: 0.5),
+            .fadeAlpha(to: 0.8, duration: 0.1),
+            .wait(forDuration: 1.1),
+            .fadeAlpha(to: 0, duration: 0.3),
         ])
         
         let sequence3 = SKAction.sequence([
-            SKAction.rotate(toAngle: CGFloat.pi / 8, duration: 0.1),
-            SKAction.rotate(toAngle: -CGFloat.pi / 8, duration: 0.2),
+            .rotate(toAngle: CGFloat.pi / 8, duration: 0.1),
+            .rotate(toAngle: -CGFloat.pi / 8, duration: 0.2),
         ])
         
-        shadow2.run(SKAction.repeatForever(sequence2))
-        shadow2.run(SKAction.repeatForever(sequence3))
+        shadow2.run(.repeatForever(sequence2))
+        shadow2.run(.repeatForever(sequence3))
         
         action(label: badText1, waitBefore: 0, waitAfter: 4, x: 300, y: -700)
         action(label: badText2, waitBefore: 2, waitAfter: 2, x: 100, y: -700)
@@ -179,8 +199,8 @@ class FinalScene: SKScene {
             
             let sequence1 = SKAction.sequence([
                 SKAction.fadeAlpha(to: 0, duration: 0),
-                SKAction.moveTo(x: -200, duration: 0),
-                SKAction.moveTo(y: 120, duration: 0),
+                SKAction.moveTo(x: msgXPosition, duration: 0),
+                SKAction.moveTo(y: msgYPosition, duration: 0),
                 SKAction.scale(to: 0, duration: 0),
             ])
             
@@ -203,16 +223,12 @@ class FinalScene: SKScene {
         }
         
         run(SKAction.wait(forDuration: 6)){
-            self.setRespirationN1()
+            breath.alpha = 0
+            self.addChild(breath)
+            breath.run(SKAction.fadeAlpha(to: 1, duration: 1.4))
         }
     }
-    
-    func setRespirationN1(){
-        breathTime1.alpha = 0
-        addChild(breathTime1)
-        breathTime1.run(SKAction.fadeAlpha(to: 1, duration: 1.4))
-    }
-    
+
     func setBreatTime1Action(){
         monsterV1.removeFromParent()
         removeActionAndAlpha(node: badText1)
@@ -225,10 +241,106 @@ class FinalScene: SKScene {
             node.alpha = 0
         }
         
-        coloredBeach.alpha = 0.1
+        coloredBeach.alpha = 0.15
+        shadow.alpha = 0.5
+        rain.alpha = 0.6
         
+        addChild(monsterV2)
+        
+        monsterAttack(x: -70, y: 10, breath: breathTime2, monster: monsterV2, scale: 0.8)
     }
     
-    //MARK: - Second monster
+    func setBreatTime2Action(){
+        monsterV2.removeFromParent()
+        shadow2.removeFromParent()
+        removeActionAndAlpha(node: badText1)
+        removeActionAndAlpha(node: badText2)
+        removeActionAndAlpha(node: badText3)
+        removeActionAndAlpha(node: shadow2)
+        
+        func removeActionAndAlpha(node: SKNode){
+            node.removeAllActions()
+            node.alpha = 0
+        }
+        
+        coloredBeach.alpha = 0.25
+        rain.alpha = 0.2
+        
+        addChild(monsterV3)
+        
+        finalAgressiveMessages()
+    }
+    
+    func finalAgressiveMessages(){
+        
+        action(node: badText1, before: 2, x: 0, y: -140)
+        
+        action(node: badText2, before: 4, x: 40, y: -130)
+        
+        action(node: badText3, before: 6, x: 70, y: -135)
+        
+        func action(node: SKLabelNode, before: CGFloat, x: CGFloat, y: CGFloat){
+            
+            node.alpha = 1
+            node.setScale(0)
+            node.position = CGPoint(x: 35, y: -90)
+            
+            node.run(.sequence([
+                .wait(forDuration: before),
+                .moveTo(x: x, duration: 1),
+            ]))
+            
+            node.run(.sequence([
+                .wait(forDuration: before),
+                .moveTo(y: y, duration: 1),
+            ]))
+            
+            node.run(.sequence([
+                .wait(forDuration: before),
+                .scale(to: 0.2, duration: 1),
+            ])){
+                node.run(SKAction.fadeAlpha(to: 0, duration: 1))
+            }
+            
+            monsterV3.run(.sequence([
+                .wait(forDuration: before),
+                .scale(to: 0.7, duration: 0.2),
+                .scale(to: 0.78, duration: 0.2),
+                .scale(to: 0.75, duration: 0.2),
+            ]))
+        }
+           
+        run(.wait(forDuration: 8)){
+            self.monsterV3.run( .sequence([
+                .move(by: CGVector(dx: 10, dy: 0), duration: 0.2),
+                .move(by: CGVector(dx: -10, dy: 0), duration: 0.2),
+                .move(by: CGVector(dx: 10, dy: 0), duration: 0.2),
+            ])){
+                self.monsterV3.run(.repeatForever(.sequence([
+                    .move(by: CGVector(dx: -350, dy: 0), duration: 2),
+                ])))
+                
+                self.monsterV3.run(.repeatForever(.sequence([
+                    .scale(to: 0.85, duration: 0.5),
+                    .scale(to: 0.75, duration: 0.5),
+                ])))
+                
+                self.shadow.run(SKAction.fadeAlpha(to: 0, duration: 4)){
+                    self.shadow.removeFromParent()
+                }
+                
+                self.coloredBeach.run(SKAction.fadeAlpha(to: 1, duration: 4)){
+                    self.grayBeach.removeFromParent()
+                }
+                
+                self.rain.run(SKAction.fadeAlpha(to: 0, duration: 4)){
+                    self.rain.removeFromParent()
+                }
+                
+            }
+
+        }
+        
+    }
     
 }

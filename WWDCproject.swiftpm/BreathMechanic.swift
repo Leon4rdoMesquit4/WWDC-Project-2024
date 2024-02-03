@@ -146,7 +146,7 @@ class BreathMechanic: SKNode {
         bpmTextLabel.removeFromParent()
         darkness.removeFromParent()
         
-        coloredCircle.run(SKAction.fadeAlpha(to: 0, duration: 2))
+        coloredCircle.run(SKAction.fadeAlpha(to: 0, duration: 4))
         callback()
     }
     
@@ -216,7 +216,7 @@ class BreathMechanic: SKNode {
         centerCircle.run(SKAction.repeatForever(
                 SKAction.sequence([
                     SKAction.wait(forDuration: 1.1),
-                    SKAction.scale(to: 0.8, duration: 0.5),
+                    SKAction.scale(to: 0.83, duration: 0.5),
                     SKAction.scale(to: 0.75, duration: 0.5),
                     SKAction.wait(forDuration: 0.4),
                 ])
@@ -226,7 +226,7 @@ class BreathMechanic: SKNode {
         middleCircle.run(SKAction.repeatForever(
                 SKAction.sequence([
                     SKAction.wait(forDuration: 1.3),
-                    SKAction.scale(to: 0.8, duration: 0.5),
+                    SKAction.scale(to: 0.83, duration: 0.5),
                     SKAction.scale(to: 0.75, duration: 0.5),
                     SKAction.wait(forDuration: 0.2),
                 ])
@@ -236,7 +236,7 @@ class BreathMechanic: SKNode {
         mainCircle.run(SKAction.repeatForever(
                 SKAction.sequence([
                     SKAction.wait(forDuration: 1.5),
-                    SKAction.scale(to: 0.8, duration: 0.5),
+                    SKAction.scale(to: 0.83, duration: 0.5),
                     SKAction.scale(to: 0.75, duration: 0.5),
                 ])
             )

@@ -19,8 +19,8 @@ class StoryScene: SKScene {
     
     lazy var story1: SKSpriteNode = {
         let node = SKSpriteNode(imageNamed: "Story1")
-        node.position = CGPoint(x: 0, y: 90)
-        node.setScale(0.75)
+        node.position = CGPoint(x: -30, y: 100)
+        node.setScale(0.55)
         return node
     }()
     
@@ -68,9 +68,17 @@ class StoryScene: SKScene {
     var secondText: SKLabelNode = SKLabelNode(text: "test")
     var storyNumber: Int = 0
     
+    var backgroundMusic: SKAudioNode!
+    
     override func didMove(to view: SKView) {
         sceneConfiguration()
         addElements()
+        
+        if let musicURL = Bundle.main.url(forResource: "storysound", withExtension: "mp3") {
+            backgroundMusic = SKAudioNode(url: musicURL)
+            addChild(backgroundMusic)
+            backgroundMusic.run(.changeVolume(to: 0.1, duration: 0))
+        }
     }
     
     private func firstNextButtonAction(){
@@ -96,6 +104,7 @@ class StoryScene: SKScene {
             }
             
         } else {
+            backgroundMusic.run(.changeVolume(to: 0, duration: 1))
             nextLevel(FirstScene(), transition: .crossFade(withDuration: 3))
         }
     }

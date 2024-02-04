@@ -11,6 +11,8 @@ class RainAnimation: SKNode {
     var rainSprite1: SKSpriteNode = SKSpriteNode(imageNamed: "Rain")
     var rainSprite2: SKSpriteNode = SKSpriteNode(imageNamed: "Rain")
     
+    var rainAudio: SKAudioNode!
+    
     override init() {
         super.init()
         
@@ -47,20 +49,23 @@ class RainAnimation: SKNode {
             SKAction.wait(forDuration: 2.666666),
         ]))
         
-//        let sequence3 = SKAction.sequence([
-//            SKAction.wait(forDuration: 8),
-//            SKAction.playSoundFileNamed("Chuvaa.mp3", waitForCompletion: true)
-//        ])
+        if let musicURL = Bundle.main.url(forResource: "Chuvaa", withExtension: "mp3") {
+            rainAudio = SKAudioNode(url: musicURL)
+            
+            addChild(rainAudio)
+        }
         
         run(SKAction.repeatForever(sequence1))
         run(SKAction.repeatForever(sequence2))
         
-//        run(SKAction.repeatForever(SKAction.playSoundFileNamed("Chuvaa.mp3", waitForCompletion: true)))
-//        run(SKAction.repeatForever(sequence3))
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func changeRainVolume(volume: Float){
+        rainAudio.run(.changeVolume(to: volume, duration: 8))
     }
     
 }

@@ -50,6 +50,10 @@ class FinalScene: SKScene {
     var breathTime1 = BreathMechanic()
     var breathTime2 = BreathMechanic()
     
+    var monsterAttackSound: SKAudioNode!
+    var fearSound: SKAudioNode!
+    var fearSound2: SKAudioNode!
+    
     override func didMove(to view: SKView) {
         
         setupScene()
@@ -107,6 +111,13 @@ class FinalScene: SKScene {
         addChild(badText1)
         addChild(badText2)
         addChild(badText3)
+
+        if let musicURL = Bundle.main.url(forResource: "monsterAttack", withExtension: "mp3") {
+            monsterAttackSound = SKAudioNode(url: musicURL)
+            monsterAttackSound.autoplayLooped = false
+            addChild(monsterAttackSound)
+            
+        }
     }
     
     func setNodesActions(){
@@ -127,7 +138,19 @@ class FinalScene: SKScene {
                 rain.run(.fadeAlpha(to: 1, duration: 2))
                 shadow.run(.fadeAlpha(to: 1, duration: 2))
                 monsterV1.run(.fadeAlpha(to: 1, duration: 1))
-
+                
+                if let musicURL = Bundle.main.url(forResource: "Medo", withExtension: "m4a") {
+                    fearSound = SKAudioNode(url: musicURL)
+                    fearSound2 = SKAudioNode(url: musicURL)
+                    addChild(fearSound)
+                    
+                    fearSound.run(.changeVolume(to: 0.08, duration: 0))
+                    
+                    run(.wait(forDuration: 1)){
+                        self.addChild(self.fearSound2)
+                        self.fearSound2.run(.changeVolume(to: 0.08, duration: 0))
+                    }
+                }
             }
         }
         
@@ -257,6 +280,8 @@ class FinalScene: SKScene {
         addChild(monsterV2)
         
         monsterAttack(x: -70, y: 10, breath: breathTime2, monster: monsterV2, scale: 0.8)
+        
+        rain.changeRainVolume(volume: 0.6)
     }
     
     func setBreatTime2Action(){
@@ -278,6 +303,8 @@ class FinalScene: SKScene {
         addChild(monsterV3)
         
         finalAgressiveMessages()
+        
+        rain.changeRainVolume(volume: 0)
     }
     
     func finalAgressiveMessages(){

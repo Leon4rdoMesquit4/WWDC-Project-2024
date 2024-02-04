@@ -30,6 +30,8 @@ class MainMenu: SKScene{
         return button
     }()
     
+    var backgroundMusic: SKAudioNode!
+    
     override func didMove(to view: SKView) {
         backgroundColor = SKColor.bgColor
         
@@ -43,13 +45,25 @@ class MainMenu: SKScene{
             node.run(SKAction.wait(forDuration: 0.12)) {
                 node.run(SKAction.rotate(byAngle: -4, duration: 2.5))
                 node.run(SKAction.fadeAlpha(to: 0, duration: 2))
+                self.backgroundMusic.run(.changeVolume(to: 0, duration: 2.5))
                 self.playButton.run(SKAction.fadeAlpha(to: 0, duration: 2)){
                     node.removeFromParent()
                     self.playButton.removeFromParent()
                     self.nextLevel(StoryScene(), transition: .fade(with: .bgColor, duration: 2))
+                    
                 }
             }
         }
+        
+        if let musicURL = Bundle.main.url(forResource: "music1", withExtension: "m4a") {
+            backgroundMusic = SKAudioNode(url: musicURL)
+            addChild(backgroundMusic)
+        }
+        
+        backgroundMusic.autoplayLooped = true
+        
+        backgroundMusic.run(.changeVolume(to: 0.5, duration: 0))
+        
         addChild(node)
         addChild(playButton)
     }

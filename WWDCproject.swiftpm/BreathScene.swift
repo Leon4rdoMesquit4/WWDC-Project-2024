@@ -9,13 +9,12 @@ import SpriteKit
 import SwiftUI
 
 class BreathScene: SKScene {
-    var textbox = GenericTextBox(title: "Meditation time", text: "A way to control your anxious and get more relax is to breath. When you do that you control your heart rate and can make the monster dissapear for a while.", nameOfTheSprite: .first, finalAnimation: true)
+    var textbox = GenericTextBox(title: "Meditation time", text: "A way to control your anxiety and become more relaxed is to breathe. When you do that, you can control your heart rate and make the monster disappear for a while.", nameOfTheSprite: .first, finalAnimation: true)
     
-    var finalTextbox = GenericTextBox(title: "Congrats!", text: "John learned how to control his breath and heart rate. It will help him in his fight against the monster", nameOfTheSprite: .first, finalAnimation: false)
+    var finalTextbox = GenericTextBox(title: "Congrats!", text: "Leo learned how to control his breath and heart rate. It will help him in his fight against the monster", nameOfTheSprite: .first, finalAnimation: false)
     
     var holdTextLabel = SKLabelNode(text: "PRESS AND HOLD")
-    var bpmTextLabel = SKLabelNode(text: "108 bpm")
-//    var messageTextLabel = SKLabelNode(text: "Control John’s breath and your heart rate")
+    var bpmTextLabel = SKLabelNode(text: "")
     
     var mainCircle = SKSpriteNode(imageNamed: "Circle3")
     var middleCircle = SKSpriteNode(imageNamed: "Circle2")
@@ -102,7 +101,6 @@ class BreathScene: SKScene {
             quickBreath2.run(.changeVolume(to: 0, duration: 0))
         }
         
-        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -113,7 +111,7 @@ class BreathScene: SKScene {
                     self.holdTextLabel.text = "WAIT"
                     self.coloredCircle.run(SKAction.wait(forDuration: 3)){
                         self.isBreathing = true
-                        self.holdTextLabel.text = "SOLTE"
+                        self.holdTextLabel.text = "RELEASE"
                     }
                 }
                 removeCirclesAnimation()

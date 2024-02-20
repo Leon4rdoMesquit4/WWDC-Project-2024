@@ -11,11 +11,11 @@ import SwiftUI
 class StoryScene: SKScene {
     
     let storyData = [
-        ["John always loved to go to the beach", "Since he was a kid"],
-        ["But someday evething changed", "When a terrible thing happened"],
-        ["A monster appears and didn’t let John", "Come back to the beach again"],
-        ["The monster is now becoming bigger", "John needs help to fight againt him!"],
-        ["Help him to fight againts his fears", "And back to the place that he loves"]]
+        ["Leo always loved to go to the beach", "since he was a kid"],
+        ["But oneday everything changed", "when something terrible happened"],
+        ["A monster appeared and didn’t let Leo", "come back to the beach again"],
+        ["The monster is now getting bigger!", "Leo needs help to fight against it!"],
+        ["Help him fight his fears", "and get back to the place that he loves"]]
     
     lazy var story1: SKSpriteNode = {
         let node = SKSpriteNode(imageNamed: "Story1")

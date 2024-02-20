@@ -8,35 +8,6 @@
 import SpriteKit
 import SwiftUI
 
-//struct DisplayTest: View {
-//    
-//    var storyScene: SKScene {
-//        let scene = TestScene()
-//        scene.size = SceneConfiguration.shared.size
-//        scene.scaleMode = .aspectFill
-//        return scene
-//    }
-//    
-//    var body: some View {
-//        SpriteView(scene: storyScene)
-//            .ignoresSafeArea()
-//            .statusBarHidden()
-//    }
-//}
-//
-//#Preview {
-//    DisplayTest()
-//}
-
-class TestScene: SKScene {
-    
-    override func didMove(to view: SKView) {
-        anchorPoint = CGPoint(x: 0.5, y: 0.5)
-        
-        addChild(BreathMechanic())
-    }
-}
-
 class BreathMechanic: SKNode {
     var mainCircle = SKSpriteNode(imageNamed: "Circle3")
     var middleCircle = SKSpriteNode(imageNamed: "Circle2")
@@ -44,7 +15,7 @@ class BreathMechanic: SKNode {
     var coloredCircle = SKShapeNode(circleOfRadius: 1.3725)
     
     var holdTextLabel = SKLabelNode(text: "PRESS AND HOLD")
-    var bpmTextLabel = SKLabelNode(text: "108 bpm")
+    var bpmTextLabel = SKLabelNode(text: "")
     
     var isOnboardingEnded: Bool = false
     var isBreathing: Bool = false
@@ -114,11 +85,12 @@ class BreathMechanic: SKNode {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if isOnboardingEnded{
             if !isBreathing{
+                breathSound(resourceName: "in")
                 coloredCircle.run(SKAction.scale(to: 100, duration: 3)){
                     self.holdTextLabel.text = "WAIT"
                     self.coloredCircle.run(SKAction.wait(forDuration: 3)){
                         self.isBreathing = true
-                        self.holdTextLabel.text = "SOLTE"
+                        self.holdTextLabel.text = "RELEASE"
                     }
                 }
                 removeCirclesAnimation()
@@ -153,6 +125,7 @@ class BreathMechanic: SKNode {
     func setUpTouchEnded(){
         if isOnboardingEnded {
             if isBreathing {
+                breathSound(resourceName: "out")
                 touchBeg = false
                 coloredCircle.run(SKAction.scale(to: 1, duration: 3)){ [self] in
                     coloredCircle.run(SKAction.scale(to: 2000, duration: 0.4)){
@@ -173,6 +146,7 @@ class BreathMechanic: SKNode {
     }
     
     func touchCancelledBefore(){
+        cancellBreathSound()
         coloredCircle.removeAllActions()
         coloredCircle.run(SKAction.scale(to: 1, duration: 0.1))
         infiniteCircleAnimation()
@@ -290,4 +264,25 @@ class BreathMechanic: SKNode {
             SKAction.scale(to: 0.75, duration: 1.6)
         )
     }
+    
+    func breathSound(resourceName: String){
+            if let musicURL = Bundle.main.url(forResource: resourceName, withExtension: "m4a") {
+                let breath = SKAudioNode(url: musicURL)
+                breath.name = "breath"
+                breath.autoplayLooped = false
+                self.bpmTextLabel.addChild(breath)
+                run(.wait(forDuration: 0.6)){
+                    breath.run(.play()){
+                        self.run(.wait(forDuration: 3)){
+                            breath.removeFromParent()
+                        }
+                    }
+                }
+            }
+    }
+    
+    func cancellBreathSound(){
+        bpmTextLabel.removeAllChildren()
+    }
+    
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 
+// Size configuration for the size of the Scene
 class SceneConfiguration {
     static var shared = SceneConfiguration()
     

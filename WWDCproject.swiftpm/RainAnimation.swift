@@ -18,7 +18,6 @@ class RainAnimation: SKNode {
         
         rainSprite1.setScale(0.3415)
         rainSprite1.position = CGPoint(x: 0, y: rainSprite1.size.height - 25)
-        //2514.89479
         
         rainSprite2.setScale(0.3415)
         rainSprite2.xScale = -0.3415

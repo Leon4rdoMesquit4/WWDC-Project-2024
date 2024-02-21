@@ -118,7 +118,7 @@ class BreathMechanic: SKNode {
         bpmTextLabel.removeFromParent()
         darkness.removeFromParent()
         
-        coloredCircle.run(SKAction.fadeAlpha(to: 0, duration: 3))
+        coloredCircle.run(SKAction.fadeAlpha(to: 0, duration: 0.5))
         callback()
     }
     

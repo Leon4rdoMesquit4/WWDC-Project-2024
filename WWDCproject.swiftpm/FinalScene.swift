@@ -168,7 +168,7 @@ class FinalScene: SKScene {
             .scale(to: scale , duration: 0.5),
         ])))
         
-        run(.wait(forDuration: 4)){ [self] in
+        run(.wait(forDuration: 2)){ [self] in
             badText1.zRotation = CGFloat.pi / 16
             badText2.zRotation = -CGFloat.pi / 32
             badText3.zRotation = CGFloat.pi / 16

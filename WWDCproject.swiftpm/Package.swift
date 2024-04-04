@@ -8,19 +8,19 @@ import PackageDescription
 import AppleProductTypes
 
 let package = Package(
-    name: "WWDCproject",
+    name: "Natiexy",
     platforms: [
         .iOS("16.0")
     ],
     products: [
         .iOSApplication(
-            name: "WWDCproject",
+            name: "Natiexy",
             targets: ["AppModule"],
             bundleIdentifier: "Leonardo.WWDCproject",
             teamIdentifier: "PCTRQS8Z4G",
             displayVersion: "1.0",
             bundleVersion: "1",
-            appIcon: .placeholder(icon: .star),
+            appIcon: .asset("AppIcon"),
             accentColor: .presetColor(.red),
             supportedDeviceFamilies: [
                 .pad

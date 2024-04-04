@@ -13,8 +13,10 @@ class SKButton: SKNode {
     private var cropNode: SKCropNode
     private var action: (() -> Void)? = nil
     var isEnabled = true
+    var shape: SKShapeNode!
     
     init(label: SKLabelNode) {
+        
         button = label
         
         mask = SKSpriteNode(color: .black, size: button.frame.size)
@@ -33,6 +35,12 @@ class SKButton: SKNode {
         
         nodesConfig()
         addNodes()
+        
+        shape = SKShapeNode(rect: CGRect(x: -button.frame.size.width, y: -button.frame.size.height * 1.3, width: button.frame.size.width * 2, height: button.frame.size.height * 3))
+        shape.position = mask.position
+        shape.fillColor = .clear
+        shape.strokeColor = .clear
+        addChild(shape)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -60,7 +68,7 @@ class SKButton: SKNode {
             for touch in touches {
                 let location: CGPoint = touch.location(in: self)
                 
-                if button.contains(location){
+                if shape.contains(location){
                     mask.alpha = 0.5
                 } else {
                     mask.alpha = 0
@@ -74,7 +82,7 @@ class SKButton: SKNode {
             for touch in touches {
                 let location: CGPoint = touch.location(in: self)
                 
-                if button.contains(location){
+                if shape.contains(location){
                     disable()
                     if action != nil{
                         action!()

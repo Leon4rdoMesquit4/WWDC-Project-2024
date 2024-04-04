@@ -9,13 +9,12 @@ import SpriteKit
 import SwiftUI
 
 class BreathScene: SKScene {
-    var textbox = GenericTextBox(title: "Meditation time", text: "A way to control your anxious and get more relax is to breath. When you do that you control your heart rate and can make the monster dissapear for a while.", nameOfTheSprite: .first, finalAnimation: true)
+    var textbox = GenericTextBox(title: "Meditation time", text: "A way to control your anxiety and become more relaxed is to breathe. When you do that, you can control your heart rate and make the monster disappear for a while.", nameOfTheSprite: .first, finalAnimation: true)
     
-    var finalTextbox = GenericTextBox(title: "Congrats!", text: "John learned how to control his breath and heart rate. It will help him in his fight against the monster", nameOfTheSprite: .first, finalAnimation: false)
+    var finalTextbox = GenericTextBox(title: "Congrats!", text: "Leo learned how to control his breath and heart rate. It will help him in his fight against the monster", nameOfTheSprite: .first, finalAnimation: false)
     
     var holdTextLabel = SKLabelNode(text: "PRESS AND HOLD")
-    var bpmTextLabel = SKLabelNode(text: "108 bpm")
-//    var messageTextLabel = SKLabelNode(text: "Control John’s breath and your heart rate")
+    var bpmTextLabel = SKLabelNode(text: "")
     
     var mainCircle = SKSpriteNode(imageNamed: "Circle3")
     var middleCircle = SKSpriteNode(imageNamed: "Circle2")
@@ -27,6 +26,8 @@ class BreathScene: SKScene {
     var isBreathing: Bool = false
     var breathCount: Int = 0
     var touchBeg: Bool = true
+    var quickBreath: SKAudioNode!
+    var quickBreath2: SKAudioNode!
     
     override func didMove(to view: SKView) {
         backgroundColor = .bgColor
@@ -62,11 +63,12 @@ class BreathScene: SKScene {
 //        messageTextLabel.fontName = "Futura"
 //        messageTextLabel.fontSize = 25
         
-        textbox.addAction {
-            self.firstCircleAnimation(circle: self.centerCircle)
-            self.firstCircleAnimation(circle: self.mainCircle)
-            self.secondCircleAnimation(circle: self.middleCircle)
-            self.fadeFirstSceneAlpha()
+        textbox.addAction { [self] in
+            firstCircleAnimation(circle: centerCircle)
+            firstCircleAnimation(circle: mainCircle)
+            secondCircleAnimation(circle: middleCircle)
+            fadeFirstSceneAlpha()
+            quickBreath.run(.changeVolume(to: 0.8, duration: 0))
         }
         
         finalTextbox.addAction {
@@ -85,16 +87,31 @@ class BreathScene: SKScene {
         addChild(coloredCircle)
 //        addChild(messageTextLabel)
         addChild(textbox)
+        
+        if let musicURL = Bundle.main.url(forResource: "breath", withExtension: "m4a") {
+            quickBreath = SKAudioNode(url: musicURL)
+            addChild(quickBreath)
+            
+            quickBreath.run(.changeVolume(to: 0.1, duration: 0))
+        }
+        
+        if let musicURL = Bundle.main.url(forResource: "quickBreath2", withExtension: "m4a") {
+            quickBreath2 = SKAudioNode(url: musicURL)
+            addChild(quickBreath2)
+            quickBreath2.run(.changeVolume(to: 0, duration: 0))
+        }
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if isOnboardingEnded{
             if !isBreathing{
+                breathSound(resourceName: "in")
                 coloredCircle.run(SKAction.scale(to: 100, duration: 3)){
                     self.holdTextLabel.text = "WAIT"
                     self.coloredCircle.run(SKAction.wait(forDuration: 3)){
                         self.isBreathing = true
-                        self.holdTextLabel.text = "SOLTE"
+                        self.holdTextLabel.text = "RELEASE"
                     }
                 }
                 removeCirclesAnimation()
@@ -118,6 +135,7 @@ class BreathScene: SKScene {
     func setUpTouchEnded(){
         if isOnboardingEnded {
             if isBreathing && breathCount == 1 {
+                breathSound(resourceName: "out")
                 touchBeg = false
                 coloredCircle.run(SKAction.scale(to: 1, duration: 3)){ [self] in
                     coloredCircle.run(SKAction.scale(to: 2000, duration: 0.2)){ [self] in
@@ -128,6 +146,7 @@ class BreathScene: SKScene {
                     }
                 }
             } else if isBreathing && breathCount == 0 {
+                breathSound(resourceName: "out")
                 touchBeg = false
                 coloredCircle.run(SKAction.scale(to: 1, duration: 3)){ [self] in
                     holdTextLabel.text = "PRESS AND HOLD"
@@ -135,6 +154,7 @@ class BreathScene: SKScene {
                     isBreathing = false
                     touchBeg = true
                     breathCount = 1
+                    quickBreath2.run(.changeVolume(to: 0.5, duration: 0))
                 }
             } else if !isBreathing {
                 touchCancelledBefore()
@@ -153,6 +173,20 @@ class BreathScene: SKScene {
         errorSprite.zRotation = CGFloat.pi / CGFloat((Int.random(in: 0...3)))
         
         addChild(errorSprite)
+        
+        if breathCount == 0 {
+            cancellBreathSound()
+        } else if breathCount == 1 {
+            cancellBreathSound2()
+        }
+
+        if let musicURL = Bundle.main.url(forResource: "errorSound", withExtension: "mp3") {
+            var errorSound: SKAudioNode!
+            errorSound = SKAudioNode(url: musicURL)
+            errorSound.autoplayLooped = false
+            addChild(errorSound)
+            errorSound.run(.play())
+        }
         
         let sequence = SKAction.sequence([
             SKAction.move(to: CGPoint(x: 190, y: 160), duration: 0.2),
@@ -259,6 +293,38 @@ class BreathScene: SKScene {
         circle.run(
             SKAction.scale(to: 0.75, duration: 1.6)
         )
+    }
+    
+    func breathSound(resourceName: String){
+        quickBreath.run(.changeVolume(to: 0, duration: 0))
+        quickBreath2.run(.changeVolume(to: 0, duration: 0))
+            if let musicURL = Bundle.main.url(forResource: resourceName, withExtension: "m4a") {
+                let breath = SKAudioNode(url: musicURL)
+                breath.name = "breath"
+                breath.autoplayLooped = false
+                self.bpmTextLabel.addChild(breath)
+                run(.wait(forDuration: 0.6)){
+                    breath.run(.play()){
+                        self.run(.wait(forDuration: 3)){
+                            breath.removeFromParent()
+                        }
+                    }
+                }
+            }
+    }
+    
+    func cancellBreathSound(){
+        
+        quickBreath.run(.changeVolume(to: 0.5, duration: 0))
+        
+        bpmTextLabel.removeAllChildren()
+    }
+    
+    func cancellBreathSound2(){
+        
+        quickBreath2.run(.changeVolume(to: 0.5, duration: 0))
+        
+        bpmTextLabel.removeAllChildren()
     }
     
 }

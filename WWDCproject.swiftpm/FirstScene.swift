@@ -10,27 +10,24 @@ import SwiftUI
 
 class FirstScene: SKScene {
     
-    var textBox: GenericTextBox = GenericTextBox(title: "School time", text: "The monster is trying to attack John’s school. Help John to discover what is making the monster come back from the shadows!", nameOfTheSprite: .first, finalAnimation: true)
-    
-    var triggerTextBox: GenericTextBox = GenericTextBox(title: "Triggers", text: "The monster gets strong when John see beach elements.\n\nIt reminds him of bad memories and make John anxious and sad. ", nameOfTheSprite: .trigger, finalAnimation: false)
+    var textBox: GenericTextBox = GenericTextBox(title: "School time", text: "The monster is trying to attack Leo's school. Help Leo discover what is causing the monster to emerge from the shadows!", nameOfTheSprite: .first, finalAnimation: true)
+    var triggerTextBox: GenericTextBox = GenericTextBox(title: "Triggers", text: "The monster gets stronger when Leo sees beach elements.\n\nIt reminds him of bad memories and makes Leo anxious and sad. ", nameOfTheSprite: .trigger, finalAnimation: false)
     
     let coloredSchool: SKSpriteNode = SKSpriteNode(imageNamed: "ColoredSchool")
-    
     let jumpscare: SKSpriteNode = SKSpriteNode(imageNamed: "Story4")
-    
     let darkness2: SKSpriteNode = SKSpriteNode(color: .black, size: SceneConfiguration.shared.size)
-    
     let darkness1: SKSpriteNode = SKSpriteNode(imageNamed: "Darkness1")
+    var ballShineShap: SKSpriteNode = SKSpriteNode(imageNamed: "Ball")
+    var posterShineShap: SKSpriteNode = SKSpriteNode(imageNamed: "Poster")
+    var monsterSprite: SKSpriteNode = SKSpriteNode(imageNamed: "Monster")
     
     var saturation = SKEffectNode()
     
-    var ballShineShap: SKSpriteNode = SKSpriteNode(imageNamed: "Ball")
+    var isSceneEnded: Bool = true
     
-    var posterShineShap: SKSpriteNode = SKSpriteNode(imageNamed: "Poster")
-    
-    var monsterSprite: SKSpriteNode = SKSpriteNode(imageNamed: "Monster")
-    
-    var isSceneEnded: Bool = false
+    var jumpscareMusic: SKAudioNode!
+    var posJumpscareMusic: SKAudioNode!
+    var posJumpscareMusic2: SKAudioNode!
     
     override func didMove(to view: SKView) {
         backgroundColor = SKColor.bgColor
@@ -92,6 +89,9 @@ class FirstScene: SKScene {
                     triggerTextBox.alpha = 0
                     
                     triggerTextBox.run(SKAction.fadeAlpha(to: 1, duration: 1))
+                    
+                    posJumpscareMusic.run(.changeVolume(to: 0.05, duration: 3))
+                    posJumpscareMusic2.run(.changeVolume(to: 0.05, duration: 3))
                 }
             }
         }
@@ -166,15 +166,37 @@ class FirstScene: SKScene {
         
         self.run(actionsForSaturation)
         
-        self.darkness2.run(actions){
-            self.addChild(self.monsterSprite)
-            self.shineAction()
-            self.darkness2.alpha = 0.5
-            self.darkness1.alpha = 1
+        if let musicURL = Bundle.main.url(forResource: "Medo", withExtension: "m4a") {
+            posJumpscareMusic = SKAudioNode(url: musicURL)
+            posJumpscareMusic2 = SKAudioNode(url: musicURL)
         }
-        self.jumpscare.run(actions){
-            self.jumpscare.alpha = 0
+        
+        if let musicURL = Bundle.main.url(forResource: "ah1", withExtension: "mp3") {
+            run(.wait(forDuration: 1)){ [self] in
+                jumpscareMusic = SKAudioNode(url: musicURL)
+                jumpscareMusic.autoplayLooped = false
+                addChild(jumpscareMusic)
+                jumpscareMusic.run(.play())
+            }
+        }
+        
+        self.darkness2.run(actions){ [self] in
+            addChild(monsterSprite)
+            isSceneEnded = false
+            shineAction()
+            darkness2.alpha = 0.5
+            darkness1.alpha = 1
+        }
+        self.jumpscare.run(actions){ [self] in
+            jumpscare.alpha = 0
+            addChild(posJumpscareMusic)
             
+            posJumpscareMusic.run(.changeVolume(to: 0.5, duration: 0))
+            
+            run(.wait(forDuration: 1)){
+                self.addChild(self.posJumpscareMusic2)
+                self.posJumpscareMusic2.run(.changeVolume(to: 0.5, duration: 0))
+            }
         }
     }
     

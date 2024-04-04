@@ -31,7 +31,7 @@ struct DisplayTest: View {
 class FinalScene: SKScene {
     
     var rain: RainAnimation = RainAnimation()
-    var textBox = GenericTextBox(title: "Fight time", text: "Now it’s time to confront your fears and come back to the beach! Use the deep breath tecnique that John learned!", nameOfTheSprite: .first, finalAnimation: true)
+    var textBox = GenericTextBox(title: "Fight time", text: "Now it’s time to confront your fears and come back to the beach! Use the deep breath technique that Leo learned!", nameOfTheSprite: .first, finalAnimation: true)
     var grayBeach = SKSpriteNode(imageNamed: "Beach")
     var coloredBeach = SKSpriteNode(imageNamed: "ColoredBeach")
     var monsterV1 = SKSpriteNode(imageNamed: "Mv1")
@@ -44,17 +44,19 @@ class FinalScene: SKScene {
     let finalDarkness = SKShapeNode(rect: CGRect(x: -Int(SceneConfiguration.shared.width)/2, y: -Int(SceneConfiguration.shared.height)/2, width: Int(SceneConfiguration.shared.width), height: Int(SceneConfiguration.shared.height)))
     
     let badText1 = SKLabelNode(text: "You are a loser")
-    let badText2 = SKLabelNode(text: "You don't deserve to be alive")
+    let badText2 = SKLabelNode(text: "You won't come back to the beach")
     let badText3 = SKLabelNode(text: "No one loves you")
+    let credits = SKLabelNode(text: "Credits: Leonardo Mesquita Alves")
     
     var breathTime1 = BreathMechanic()
     var breathTime2 = BreathMechanic()
     
+    var monsterAttackSound: SKAudioNode!
+    var fearSound: SKAudioNode!
+    
     override func didMove(to view: SKView) {
-        
         setupScene()
         setNodesActions()
-        
     }
     
     func setupScene(){
@@ -107,6 +109,13 @@ class FinalScene: SKScene {
         addChild(badText1)
         addChild(badText2)
         addChild(badText3)
+
+        if let musicURL = Bundle.main.url(forResource: "monsterAttack", withExtension: "mp3") {
+            monsterAttackSound = SKAudioNode(url: musicURL)
+            monsterAttackSound.autoplayLooped = false
+            addChild(monsterAttackSound)
+            
+        }
     }
     
     func setNodesActions(){
@@ -127,7 +136,14 @@ class FinalScene: SKScene {
                 rain.run(.fadeAlpha(to: 1, duration: 2))
                 shadow.run(.fadeAlpha(to: 1, duration: 2))
                 monsterV1.run(.fadeAlpha(to: 1, duration: 1))
-
+                
+                if let musicURL = Bundle.main.url(forResource: "Medo", withExtension: "m4a") {
+                    fearSound = SKAudioNode(url: musicURL)
+                    addChild(fearSound)
+                    
+                    fearSound.run(.changeVolume(to: 0.8, duration: 0))
+                    
+                }
             }
         }
         
@@ -135,8 +151,9 @@ class FinalScene: SKScene {
             self.setBreatTime1Action()
         }
         
-        breathTime2.addAction {
-            self.setBreatTime2Action()
+        breathTime2.addAction { [self] in
+            setBreatTime2Action()
+            fearSound.run(.changeVolume(to: 0, duration: 0))
         }
     }
     
@@ -149,10 +166,9 @@ class FinalScene: SKScene {
             .scale(to: scale * 1.0249, duration: 1),
             .scale(to: scale * 1.0161, duration: 1),
             .scale(to: scale , duration: 0.5),
-            
         ])))
         
-        run(.wait(forDuration: 4)){ [self] in
+        run(.wait(forDuration: 2)){ [self] in
             badText1.zRotation = CGFloat.pi / 16
             badText2.zRotation = -CGFloat.pi / 32
             badText3.zRotation = CGFloat.pi / 16
@@ -257,6 +273,8 @@ class FinalScene: SKScene {
         addChild(monsterV2)
         
         monsterAttack(x: -70, y: 10, breath: breathTime2, monster: monsterV2, scale: 0.8)
+        
+        rain.changeRainVolume(volume: 0.6)
     }
     
     func setBreatTime2Action(){
@@ -278,6 +296,8 @@ class FinalScene: SKScene {
         addChild(monsterV3)
         
         finalAgressiveMessages()
+        
+        rain.changeRainVolume(volume: 0)
     }
     
     func finalAgressiveMessages(){
@@ -360,13 +380,23 @@ class FinalScene: SKScene {
         addChild(finalDarkness)
         addChild(myImage)
         addChild(theEndText)
+        addChild(credits)
+        
+        theEndText.position = CGPoint(x: 0, y: 35)
+        credits.position = CGPoint(x: 0, y: -65)
+        credits.alpha = 0
         
         myImage.run(.fadeAlpha(to: 1, duration: 2))
         finalDarkness.run(.fadeAlpha(to: 0.96, duration: 2))
         
         run(.wait(forDuration: 5)){ [self] in
             myImage.run(.fadeAlpha(to: 0, duration: 2))
-            theEndText.run(.fadeAlpha(to: 1, duration: 2))
+            theEndText.run(.fadeAlpha(to: 1, duration: 2)){
+                self.run(.wait(forDuration: 5)){
+                    self.nextLevel(MainMenu(), transition: .fade(withDuration: 2))
+                }
+            }
+            credits.run(.fadeAlpha(to: 1, duration: 2))
             finalDarkness.run(.fadeAlpha(to: 1, duration: 2))
         }
     }

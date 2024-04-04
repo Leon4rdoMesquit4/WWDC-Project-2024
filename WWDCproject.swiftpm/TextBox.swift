@@ -24,7 +24,6 @@ class GenericTextBox: SKNode{
     
     var callback: (() -> Void)? = nil
     
-    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
@@ -73,7 +72,7 @@ class GenericTextBox: SKNode{
             infoNode.position = CGPoint(x: 50, y: 0)
             infoNode.setScale(0.3415)
             titleLabel.position = CGPoint(x: -350, y: 80)
-            textLabel.position = CGPoint(x: -350, y: -100)
+            textLabel.position = CGPoint(x: -350, y: -130)
             textLabel.preferredMaxLayoutWidth = 310
             nextButton.position = CGPoint(x: 290, y: -210)
         case .first:
